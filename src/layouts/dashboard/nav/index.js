@@ -58,7 +58,7 @@ export default function Nav({ openNav, onCloseNav }) {
       }}
     >
       
-      {/*
+      
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
         <Logo />
       </Box>
@@ -80,7 +80,7 @@ export default function Nav({ openNav, onCloseNav }) {
           </StyledAccount>
         </Link>
     </Box> 
-    */}
+    
 
       <NavSection data={navConfig} />
 

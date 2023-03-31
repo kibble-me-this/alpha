@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-import { useHistory } from "react-router";
 import { useNavigate } from 'react-router-dom';
 // @mui
 import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@mui/material';
@@ -15,10 +14,38 @@ export default function LoginForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  // const history = useHistory();
 
   const handleClick = () => {
     navigate('/dashboard', { replace: true });
   };
+
+  /**
+   * Perform login action via Magic's passwordless flow. Upon successuful
+   * completion of the login flow, a user is redirected to the homepage.
+   */
+  const loginWithEmail = useCallback(async () => {
+    setIsLoggingIn(true);
+
+    try {
+      await magic.auth.loginWithMagicLink({ email });
+      navigate('/dashboard', { replace: true });
+      // history.push("/");
+    } catch (err) {
+      console.log(err);
+      setIsLoggingIn(false);
+    }
+  }, [email]);  
+
+  /**
+   * Saves the value of our email input into component state.
+   */
+  const handleEmailInputOnChange = useCallback((event) => {
+    setEmail(event.target.value);
+  }, []);
 
   return (
     <>
@@ -51,6 +78,22 @@ export default function LoginForm() {
       <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
         Login
       </LoadingButton>
+
+      <div className="container">
+      <h1>Please sign up or login</h1>
+      <input
+        type="email"
+        name="email"
+        required="required"
+        placeholder="Enter your email"
+        onChange={handleEmailInputOnChange}
+        disabled={isLoggingIn}
+      />
+      <button onClick={loginWithEmail} disabled={isLoggingIn}>Send</button>
+      
+    </div>
+
+
     </>
   );
 }

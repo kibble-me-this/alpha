@@ -2,6 +2,11 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
+import { Box } from '@mui/material';
+// hooks
+import useResponsive from '../../hooks/useResponsive';
+// components
+// import { useSettingsContext } from '../../components/settings/SettingsContext';
 //
 import Header from './header';
 import Nav from './nav';

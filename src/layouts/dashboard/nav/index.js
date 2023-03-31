@@ -14,6 +14,10 @@ import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
 import navConfig from './config';
+// import NavDocs from './NavDocs';
+// import NavAccount from './NavAccount';
+// import NavToggleButton from './NavToggleButton';
+
 
 // ----------------------------------------------------------------------
 
@@ -53,11 +57,13 @@ export default function Nav({ openNav, onCloseNav }) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' },
       }}
     >
+      
+      {/*
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
         <Logo />
       </Box>
 
-      <Box sx={{ mb: 5, mx: 2.5 }}>
+       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
             <Avatar src={account.photoURL} alt="photoURL" />
@@ -73,12 +79,14 @@ export default function Nav({ openNav, onCloseNav }) {
             </Box>
           </StyledAccount>
         </Link>
-      </Box>
+    </Box> 
+    */}
 
       <NavSection data={navConfig} />
 
       <Box sx={{ flexGrow: 1 }} />
 
+      {/*
       <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
         <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
           <Box
@@ -102,6 +110,7 @@ export default function Nav({ openNav, onCloseNav }) {
           </Button>
         </Stack>
       </Box>
+      */}
     </Scrollbar>
   );
 

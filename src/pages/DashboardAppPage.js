@@ -1,3 +1,5 @@
+import * as nearAPI from "near-api-js";
+
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
 // @mui

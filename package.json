@@ -42,8 +42,8 @@
     "@emotion/styled": "^11.10.6",
     "@faker-js/faker": "^7.6.0",
     "@iconify/react": "^4.1.0",
-    "@magic-ext/near": "^11.0.1",
-    "@magic-ext/oauth": "^10.0.1",
+    "@magic-ext/near": "^5.0.0",
+    "@magic-ext/oauth": "^1.0.0",
     "@mui/lab": "^5.0.0-alpha.103",
     "@mui/material": "^5.11.10",
     "apexcharts": "^3.37.0",
@@ -51,8 +51,8 @@
     "date-fns": "^2.29.3",
     "history": "^5.3.0",
     "lodash": "^4.17.21",
-    "magic-sdk": "^16.0.1",
-    "near-api-js": "^2.0.4",
+    "magic-sdk": "^6.2.0",
+    "near-api-js": "^0.44.1",
     "numeral": "^2.0.6",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
@@ -64,7 +64,8 @@
     "react-router-dom": "^6.8.1",
     "react-scripts": "^5.0.1",
     "simplebar-react": "^3.2.1",
-    "web-vitals": "^3.1.1"
+    "web-vitals": "^3.1.1",
+    "webpack": "^4.44.2"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",

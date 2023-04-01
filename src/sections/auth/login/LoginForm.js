@@ -23,10 +23,6 @@ export default function LoginForm() {
     navigate('/dashboard', { replace: true });
   };
 
-  /**
-   * Perform login action via Magic's passwordless flow. Upon successuful
-   * completion of the login flow, a user is redirected to the homepage.
-   */
   const loginWithEmail = useCallback(async () => {
     setIsLoggingIn(true);
 
@@ -40,9 +36,6 @@ export default function LoginForm() {
     }
   }, [email]);  
 
-  /**
-   * Saves the value of our email input into component state.
-   */
   const handleEmailInputOnChange = useCallback((event) => {
     setEmail(event.target.value);
   }, []);
@@ -59,17 +52,10 @@ export default function LoginForm() {
           onChange={handleEmailInputOnChange}
           disabled={isLoggingIn}
         />
-      </Stack>
-
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <Checkbox name="remember" label="Remember me" />
-        <Link variant="subtitle2" underline="hover">
-          Sign up
-        </Link>
-      </Stack>
+      
       <LoadingButton fullWidth size="large" onClick={loginWithEmail} loading={isLoggingIn} disabled={isLoggingIn} variant="contained">
         Login
-      </LoadingButton>
+      </LoadingButton></Stack>
 
     </>
   );

@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
+import { Link, Container, Typography, Divider, Stack, Button, Chip, Box } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -38,6 +38,7 @@ const StyledContent = styled('div')(({ theme }) => ({
   padding: theme.spacing(12, 0),
 }));
 
+
 // ----------------------------------------------------------------------
 
 export default function LoginPage() {
@@ -46,26 +47,15 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Login | Minimal UI </title>
+        <title> Sign in | Petastic </title>
       </Helmet>
 
       <StyledRoot>
-        <Logo
-          sx={{
-            position: 'fixed',
-            top: { xs: 16, sm: 24, md: 40 },
-            left: { xs: 16, sm: 24, md: 40 },
-          }}
-        />
+      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
+        <Logo />
+      </Box>
 
-        {mdUp && (
-          <StyledSection>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
-            </Typography>
-            <img src="/assets/illustrations/illustration_login.png" alt="login" />
-          </StyledSection>
-        )}
+
 
         <Container maxWidth="sm">
           <StyledContent>
@@ -101,6 +91,16 @@ export default function LoginPage() {
             <LoginForm />
           </StyledContent>
         </Container>
+
+        {mdUp && (
+          <StyledSection>
+            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+              Hi, Welcome Back
+            </Typography>
+            <img src="/assets/illustrations/illustration_login.png" alt="login" />
+          </StyledSection>
+        )}
+
       </StyledRoot>
     </>
   );

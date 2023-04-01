@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useState } from 'react';
 // @mui
-import { Container, Stack, Typography, Button } from '@mui/material';
+import { Container, Stack, Typography, Button, Box } from '@mui/material';
 // components
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
 import Iconify from '../components/iconify';
@@ -36,6 +36,8 @@ export default function ProductsPage() {
             New Pet
           </Button>
         </Stack>
+        <Box borderBottom="1px solid #CED4DA" width="100%" mt={1} />
+
 
 
         <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>

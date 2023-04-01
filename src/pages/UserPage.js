@@ -4,6 +4,7 @@ import { sentenceCase } from 'change-case';
 import { useState } from 'react';
 // @mui
 import {
+  Box,
   Card,
   Table,
   Stack,
@@ -157,10 +158,9 @@ export default function UserPage() {
           <Typography variant="h4" gutterBottom>
             Rewards
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New User
-          </Button>
         </Stack>
+        <Box borderBottom="1px solid #CED4DA" width="100%" mt={1} />
+
 
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />

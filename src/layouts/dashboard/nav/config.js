@@ -35,34 +35,29 @@ const ICONS = {
 
 const navConfig = [
   {
-    title: 'xx dashboard',
+    title: 'Dashboard',
     path: '/dashboard/app',
     icon: icon('ic_analytics'),
   },
   {
-    title: 'user pets (cards)',
-    path: '/dashboard/user',
+    title: 'Pets',
+    path: '/dashboard/pets',
     icon: icon('ic_user'),
   },
   {
-    title: 'product rewards (list)',
-    path: '/dashboard/products',
+    title: 'Rewards',
+    path: '/dashboard/rewards',
     icon: icon('ic_cart'),
   },
   {
-    title: 'blog membership',
-    path: '/dashboard/blog',
+    title: 'Membership',
+    path: '/dashboard/membership',
     icon: icon('ic_blog'),
   },
   {
-    title: 'xx ogin',
-    path: '/login',
+    title: 'Integrations',
+    path: '/dashboard/integrations',
     icon: icon('ic_lock'),
-  },
-  {
-    title: 'xx Not found',
-    path: '/404',
-    icon: icon('ic_disabled'),
   },
 ];
 

@@ -50,49 +50,26 @@ export default function LoginForm() {
   return (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
-
         <TextField
-          name="password"
-          label="Password"
-          type={showPassword ? 'text' : 'password'}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
+          id="email"
+          label="Email"
+          type="email"
+          required
+          placeholder="Enter your email"
+          onChange={handleEmailInputOnChange}
+          disabled={isLoggingIn}
         />
       </Stack>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
         <Checkbox name="remember" label="Remember me" />
         <Link variant="subtitle2" underline="hover">
-          Forgot password?
+          Sign up
         </Link>
       </Stack>
-
-      <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
+      <LoadingButton fullWidth size="large" onClick={loginWithEmail} loading={isLoggingIn} disabled={isLoggingIn} variant="contained">
         Login
       </LoadingButton>
-
-      <div className="container">
-      <h1>Please sign up or login</h1>
-      <input
-        type="email"
-        name="email"
-        required="required"
-        placeholder="Enter your email"
-        onChange={handleEmailInputOnChange}
-        disabled={isLoggingIn}
-      />
-      <button onClick={loginWithEmail} disabled={isLoggingIn}>Send</button>
-      
-    </div>
-
 
     </>
   );

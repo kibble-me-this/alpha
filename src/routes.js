@@ -18,11 +18,12 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { element: <Navigate to="/dashboard/products" />, index: true },
+        { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
-        { path: 'user', element: <UserPage /> },
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
+        { path: 'pets', element: <ProductsPage /> },
+        { path: 'rewards', element: <UserPage /> },
+        { path: 'membership', element: <BlogPage /> },
+        { path: 'integrations', element: <BlogPage /> },
       ],
     },
     {

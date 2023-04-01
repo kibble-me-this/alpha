@@ -4,12 +4,12 @@ import { sample } from 'lodash';
 // ----------------------------------------------------------------------
 
 const PRODUCT_NAME = [
-  'Romeo',
-  'Sundae-Rose',
-  'Gigi',
-  'Nike Blazer Low 77 Vintage',
-  'Nike ZoomX SuperRep Surge',
-  'Zoom Freak 2',
+  'Romeo | Shih Tzu | M | 7yo | 5lbs',
+  'Sundae-Rose | English Bulldog | F | 3yo | 56lbs',
+  'Gigi | Shih Tzu | F | 3yo | 6lbs',
+  'Lili | Vishla-Terrier | F | 5yo | 35lbs',
+  'Kai | German Shepherd | M | 4yo | 70lbs',
+  'Racer',
   'Nike Air Max Zephyr',
   'Jordan Delta',
   'Air Jordan XXXV PF',
@@ -50,7 +50,7 @@ const products = [...Array(24)].map((_, index) => {
       (setIndex === 23 && PRODUCT_COLOR.slice(4, 6)) ||
       (setIndex === 24 && PRODUCT_COLOR.slice(5, 6)) ||
       PRODUCT_COLOR,
-    status: sample(['sale', 'new', '', '']),
+    status: sample(['BDAY SOON', 'TICK Med soon', 'Rabies Soon', '']),
   };
 });
 

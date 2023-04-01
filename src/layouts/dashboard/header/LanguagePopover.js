@@ -9,7 +9,7 @@ const LANGS = [
   {
     value: 'en',
     label: 'English',
-    icon: '/assets/icons/ic_flag_en.svg',
+    icon: '/assets/icons/ic_flag_fr.svg',
   },
   {
     value: 'de',

@@ -1,17 +1,29 @@
 import { Helmet } from 'react-helmet-async';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import * as nearAPI from "near-api-js";
+
+
 // @mui
 import { Container, Stack, Typography, Button, Box } from '@mui/material';
 // components
+import { magic } from "../magic";
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
 import Iconify from '../components/iconify';
 // mock
 import PRODUCTS from '../_mock/products';
 
+let near;
+
+
 // ----------------------------------------------------------------------
 
 export default function ProductsPage() {
   const [openFilter, setOpenFilter] = useState(false);
+  const [petCount, setPetCount] = useState(null);
+  const [userPets, setUserPets] = useState([]);
+  const navigate = useNavigate();
+  const networkId = "testnet"; // testnet, betanet, or mainnet
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -20,6 +32,66 @@ export default function ProductsPage() {
   const handleCloseFilter = () => {
     setOpenFilter(false);
   };
+
+  useEffect(() => {
+      // Create NEAR instance
+      (async () => {
+        const { connect, keyStores } = nearAPI;
+  
+        const config = {
+          networkId,
+          keyStore: new keyStores.BrowserLocalStorageKeyStore(),
+          nodeUrl: `https://rpc.${networkId}.near.org`,
+          walletUrl: `https://wallet.${networkId}.near.org`,
+          helperUrl: `https://helper.${networkId}.near.org`,
+          explorerUrl: `https://explorer.${networkId}.near.org`,
+        };
+      
+        // connect to NEAR
+        near = await connect(config);
+      })();  
+    
+    // If user is logged in, retrieve the authenticated user's profile.
+    magic.user.isLoggedIn().then(magicIsLoggedIn => {
+      if (magicIsLoggedIn) {
+        magic.user.getMetadata().then(user => {
+          getPPPTokensForOwner(user.publicAddress); 
+        });
+      } else {
+        // If no user is logged in, redirect to `/login`
+        navigate('/login', { replace: true });
+      }
+    });
+  }, []);   
+
+   /**
+   * ppp_tokens_for_owner
+   */
+   async function getPPPTokensForOwner(account_id) {
+        
+    const provider = new nearAPI.providers.JsonRpcProvider(                    // Grabbing the account nonce
+       `https://rpc.${networkId}.near.org`
+    );
+
+    const jsonstring = JSON.stringify({account_id});
+    const encodedData = window.btoa(jsonstring);
+
+    const rawResult = await provider.query({
+       request_type: "call_function",
+       account_id: "ilovepets-m2.testnet",
+       method_name: "ppp_tokens_for_owner",
+       args_base64: encodedData,
+       finality: "optimistic",
+    });
+
+    const encodedResult = new Uint8Array(rawResult.result);
+    const decoder = new TextDecoder();
+    const decodedResult = decoder.decode(encodedResult);
+    const res = JSON.parse(decodedResult);
+  
+    setUserPets(res);
+    setPetCount(res.length);
+ }   
 
   return (
     <>
@@ -50,8 +122,20 @@ export default function ProductsPage() {
             <ProductSort />
           </Stack>
         </Stack>
+        <input
+  type="text"
+  value={JSON.stringify(userPets)}
+  onChange={(e) => setUserPets(JSON.parse(e.target.value))}
+  readOnly={false}
+  style={{
+    width: '100%',
+    marginTop: '10px',
+    padding: '10px',
+    overflow: 'scroll'
+  }}
+/>
+        <ProductList products={PRODUCTS} pets={userPets} />
 
-        <ProductList products={PRODUCTS} />
       </Container>
     </>
   );

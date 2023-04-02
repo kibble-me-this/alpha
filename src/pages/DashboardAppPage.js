@@ -36,6 +36,8 @@ export default function DashboardAppPage() {
   const [balance, setBalance] = useState(0);
   const [sendAmount, setSendAmount] = useState(0);
   const [userMetadata, setUserMetadata] = useState();
+  const [petCount, setPetCount] = useState(null);
+  const [userPets, setUserPets] = useState([]);
   const [destinationAddress, setDestinationAddress] = useState("");
   const [sendingTransaction, setSendingTransaction] = useState(false);
   const navigate = useNavigate();
@@ -65,6 +67,7 @@ export default function DashboardAppPage() {
         magic.user.getMetadata().then(user => {
           setUserMetadata(user);
           fetchBalance(user.publicAddress);
+          getPPPTokensForOwner(user.publicAddress);
         });
       } else {
         // If no user is logged in, redirect to `/login`
@@ -77,7 +80,37 @@ export default function DashboardAppPage() {
     const account = await near.account(address);
     account.getAccountBalance().then(bal => setBalance(nearAPI.utils.format.formatNearAmount(bal.total))); 
   } 
+
+   /**
+   * ppp_tokens_for_owner
+   */
+   async function getPPPTokensForOwner(account_id) {
+        
+    const provider = new nearAPI.providers.JsonRpcProvider(                    // Grabbing the account nonce
+       `https://rpc.${networkId}.near.org`
+    );
+
+    const jsonstring = JSON.stringify({account_id});
+    const encodedData = window.btoa(jsonstring);
+
+    const rawResult = await provider.query({
+       request_type: "call_function",
+       account_id: "ilovepets-m2.testnet",
+       method_name: "ppp_tokens_for_owner",
+       args_base64: encodedData,
+       finality: "optimistic",
+    });
+
+    const encodedResult = new Uint8Array(rawResult.result);
+    const decoder = new TextDecoder();
+    const decodedResult = decoder.decode(encodedResult);
+    const res = JSON.parse(decodedResult);
   
+    setUserPets(res);
+    setPetCount(res.length);
+ }  
+
+
   /**
    * Perform logout action via Magic.
    */
@@ -104,6 +137,8 @@ export default function DashboardAppPage() {
       </Helmet>
 
       <Container maxWidth="xl">
+      <input type="text" value={JSON.stringify(userPets)} readOnly style={{ width: '100%', marginTop: '10px', padding: '10px' }} />
+
         <Typography variant="h4" sx={{ mb: 5 }}>
           Hi, Welcome back
         </Typography>

@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import * as nearAPI from "near-api-js";
 
 
@@ -104,9 +104,11 @@ export default function ProductsPage() {
           <Typography variant="h4" gutterBottom>
           My Pets
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Pet
-          </Button>
+          <Link to="/dashboard/blank">
+  <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+    New Pet
+  </Button>
+</Link>
         </Stack>
         <Box borderBottom="1px solid #CED4DA" width="100%" mt={1} />
 

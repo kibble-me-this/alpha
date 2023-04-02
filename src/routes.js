@@ -9,6 +9,8 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
+import BlankPage from './pages/BlankPage';
+
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +26,7 @@ export default function Router() {
         { path: 'rewards', element: <UserPage /> },
         { path: 'membership', element: <BlogPage /> },
         { path: 'integrations', element: <BlogPage /> },
+        { path: 'blank', element: <BlankPage /> },
       ],
     },
     {

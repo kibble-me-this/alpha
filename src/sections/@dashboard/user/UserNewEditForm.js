@@ -7,7 +7,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Grid, Stack, Switch, Typography, FormControlLabel } from '@mui/material';
+import { Box, Card, Grid, Stack, Switch, Typography, FormControlLabel, Button, ButtonGroup } from '@mui/material';
 // utils
 import { fData } from '../../../utils/formatNumber';
 // routes
@@ -23,6 +23,7 @@ import FormProvider, {
   RHFTextField,
   RHFUploadAvatar,
 } from '../../../components/hook-form';
+import RHFButtonGroup from '../../../components/hook-form/RHFButtonGroup';
 
 // ----------------------------------------------------------------------
 
@@ -37,35 +38,27 @@ export default function UserNewEditForm({ isEdit = false, currentUser }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    country: Yup.string().required('Country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role is required'),
+    petName: Yup.string().required('Pet name is required'),
+    petType: Yup.string().required('Pet type is required'),
+    selectedBreed: Yup.string().required('Breed / selectedBreed is required'),
     avatarUrl: Yup.mixed().required('Avatar is required'),
+    isPuppy: Yup.boolean().required('Life stage is required'),
+    isAdult: Yup.boolean().required('Life stage is required'),
+    isSenior: Yup.boolean().required('Life stage is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentUser?.name || '',
-      email: currentUser?.email || '',
-      phoneNumber: currentUser?.phoneNumber || '',
-      address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      state: currentUser?.state || '',
-      city: currentUser?.city || '',
-      zipCode: currentUser?.zipCode || '',
+      petName: currentUser?.name || '',
+      petType: currentUser?.petType || null,
+      selectedBreed: currentUser?.selectedBreed || '',
       avatarUrl: currentUser?.avatarUrl || null,
       isVerified: currentUser?.isVerified || true,
       status: currentUser?.status,
-      company: currentUser?.company || '',
-      role: currentUser?.role || '',
+      isPuppy: false,
+      isAdult: false,
+      isSenior: false,
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentUser]
   );
 
@@ -102,6 +95,7 @@ export default function UserNewEditForm({ isEdit = false, currentUser }) {
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
       navigate(PATH_DASHBOARD.user.list);
       console.log('DATA', data);
+      console.log('DATA', { petName: data.petName });
     } catch (error) {
       console.error(error);
     }
@@ -220,30 +214,37 @@ export default function UserNewEditForm({ isEdit = false, currentUser }) {
                 sm: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="name" label="Full Name" />
-              <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="phoneNumber" label="Phone Number" />
+              <RHFTextField name="petName" label="Pet Name" />
 
-              <RHFSelect native name="country" label="Country" placeholder="Country">
-                <option value="" />
-                {countries.map((country) => (
-                  <option key={country.code} value={country.label}>
-                    {country.label}
-                  </option>
-                ))}
+              <RHFSelect name="petType" label="Pet Type" defaultValue="" rules={{ required: 'Pet type is required' }}>
+                <option value="" disabled>
+                  Select a pet type
+                </option>
+                <option value="dog">Dog</option>
+                <option value="cat">Cat</option>
               </RHFSelect>
 
-              <RHFTextField name="state" label="State/Region" />
-              <RHFTextField name="city" label="City" />
-              <RHFTextField name="address" label="Address" />
-              <RHFTextField name="zipCode" label="Zip/Code" />
-              <RHFTextField name="company" label="Company" />
-              <RHFTextField name="role" label="Role" />
+              <RHFTextField name="selectedBreed" label="Breed / selectedBreed" />
+              <ButtonGroup
+                name="life_stage"
+                control={control}
+                defaultValue={null}
+                options={[
+                  { value: 'puppy', label: 'Puppy' },
+                  { value: 'adult', label: 'Adult' },
+                  { value: 'senior', label: 'Senior' },
+                ]}
+                rules={{ required: 'Life stage is required' }}
+              >
+                <Button>Puppy</Button>
+                <Button>Adult</Button>
+                <Button>Senior</Button>
+              </ButtonGroup>
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
               <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                {!isEdit ? 'Create User' : 'Save Changes'}
+                {!isEdit ? 'Create Pet' : 'Save Changes'}
               </LoadingButton>
             </Stack>
           </Card>

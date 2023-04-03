@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import * as nearAPI from "near-api-js";
+
 // form
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,12 +12,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack, Switch, Typography, FormControlLabel, Button, ButtonGroup } from '@mui/material';
 // utils
+import BN from 'bn.js';
+// import { create } from "ipfs-http-client";
+
 import { fData } from '../../../utils/formatNumber';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // assets
 import { countries } from '../../../assets/data';
 // components
+import { magic } from "../../../magic";
 import Label from '../../../components/label';
 import { useSnackbar } from '../../../components/snackbar';
 import FormProvider, {
@@ -23,7 +30,11 @@ import FormProvider, {
   RHFTextField,
   RHFUploadAvatar,
 } from '../../../components/hook-form';
-import RHFButtonGroup from '../../../components/hook-form/RHFButtonGroup';
+// import RHFButtonGroup from '../../../components/hook-form/RHFButtonGroup';
+
+
+
+
 
 // ----------------------------------------------------------------------
 
@@ -32,10 +43,68 @@ UserNewEditForm.propTypes = {
   currentUser: PropTypes.object,
 };
 
+let near;
+
+// move to .env
+const projectId = "2LIY06BYu1sRP7pEVZEg1Pk4yWg";
+const projectSecret = "0a9dca59a54739a793b891629515d83d";
+
+// const auth = `Basic ${Buffer.from(`${projectId}:${projectSecret}`).toString("base64")}`;
+
+// const client = create({
+//   host: "ipfs.infura.io",
+//  port: 5001,
+//   protocol: "https",
+//  apiPath: "/api/v0",
+//   headers: {
+//    authorization: auth
+//  }
+// });
+
+
 export default function UserNewEditForm({ isEdit = false, currentUser }) {
   const navigate = useNavigate();
+  const networkId = "testnet"; // testnet, betanet, or mainnet
+  const contractName = "ilovepets-m2.testnet";
+
+  const [userMetadata, setUserMetadata] = useState();
+  const [v1URL, setv1URL] = useState({});
+  const [txHash, setTxHash] = useState("");                                  // mint ppp
+  const [sendingTransaction, setSendingTransaction] = useState(false);       // mint ppp
+  const [image, setImage] = useState({});
+
+
+
+
+
+
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const petName = "Fluffy";
+  const petType = "Dog";
+  const selectedBreed = "Poodle";
+  const petLifeStage = "Adult";
+  const petGender = "Female";
+  const ownerName = "John Doe";
+  const ownerState = "California";
+  const ownerCity = "San Francisco";
+
+  const sampleFormData = {
+    petName: "Fluffy",
+    petType: "Dog",
+    selectedBreed: "Poodle",
+    petLifeStage: "Adult",
+    petGender: "Female",
+    ownerName: "John Doe",
+    ownerState: "California",
+    ownerCity: "San Francisco",
+    contractName: "my_contract",
+    userMetadata: { publicAddress: "1234" },
+    networkId: "testnet",
+    image: { path: "Qm1234", cid: { toV1: () => "bafybeifkzwf" } }
+  };
+  
 
   const NewUserSchema = Yup.object().shape({
     petName: Yup.string().required('Pet name is required'),
@@ -87,6 +156,74 @@ export default function UserNewEditForm({ isEdit = false, currentUser }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, currentUser]);
+
+
+  const handleCreatePassport = async (data) => {
+    // const added = await client.add(image);
+    // const v1CID = added.cid.toV1();
+    // const v1URL = `https://${v1CID}.ipfs.dweb.link`;
+    // const url = `https://ipfs.io/ipfs/${added.path}`;
+    const url = "";
+ 
+    // setv1URL(url);
+ 
+    if (!petName || !contractName) return;
+ 
+    setSendingTransaction(true);
+    setTxHash(false);
+ 
+    const publicKeyString = await magic.near.getPublicKey();
+    const publicKey = nearAPI.utils.PublicKey.fromString(publicKeyString);
+ 
+    const provider = new nearAPI.providers.JsonRpcProvider(
+      `https://rpc.${networkId}.near.org`
+    );
+ 
+    const accessKey = await provider.query(
+       `access_key/${userMetadata.publicAddress}/${publicKey.toString()}`,
+      ""
+    );
+ 
+    const nonce = accessKey.nonce + 1;
+     
+    const args = new TextEncoder().encode(JSON.stringify( {
+      pet_passport_id: `${userMetadata.publicAddress}-${petName}`,
+      metadata: {
+        title: petName,
+        pet_description: {species: petType, breed: selectedBreed, life_stage: petLifeStage, gender: petGender},
+        current_owner_description: {owner_name: ownerName, location_state: ownerState, location_city: ownerCity},
+        media: url,
+      },
+      pet_owner_id: `${userMetadata.publicAddress}.ilovepets.near`,
+    }))
+ 
+    const actions = [nearAPI.transactions.functionCall("create_pet_passport",args,300000000000000,new BN("11870000000000000000000"))];
+ 
+    const status = await near.connection.provider.status();
+    const blockHash = status.sync_info.latest_block_hash;
+    const serializedBlockHash = nearAPI.utils.serialize.base_decode(blockHash);
+ 
+    const transaction = nearAPI.transactions.createTransaction(
+      userMetadata.publicAddress,
+      publicKey,
+      contractName,
+      nonce,
+      actions,
+      serializedBlockHash
+    );
+ 
+    const rawTransaction = transaction.encode();
+    const result = await magic.near.signTransaction({rawTransaction, networkID: networkId});
+    const signedTransaction = nearAPI.transactions.SignedTransaction.decode(atob(result.encodedSignedTransaction));
+    const receipt = await near.connection.provider.sendTransaction(signedTransaction);
+
+    console.log(receipt);
+    // setTxHash(receipt.transaction.hash);
+    // fetchBalance(userMetadata.publicAddress);
+    // setSendingTransaction(false);
+    // getPPPTokensForOwner(userMetadata.publicAddress);
+  };
+
 
   const onSubmit = async (data) => {
     try {
